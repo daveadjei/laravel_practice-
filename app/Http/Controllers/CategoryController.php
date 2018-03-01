@@ -39,6 +39,11 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        $newRow = new \App\Category();
+        $newRow->name = $request->get('name');
+        $newRow->code = $request->get('code');
+        $newRow->save();
+
         return $request->all();
     }
 
