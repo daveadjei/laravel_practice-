@@ -44,7 +44,7 @@ class CategoryController extends Controller
         $newRow->code = $request->get('code');
         $newRow->save();
 
-        return $request->all();
+        return redirect(action('CategoryController@index'));
     }
 
     /**
