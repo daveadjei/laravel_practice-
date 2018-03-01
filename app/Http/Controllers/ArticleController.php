@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class CategoryController extends Controller
+class ArticleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,11 +15,10 @@ class CategoryController extends Controller
     public function index()
     {
         // get categories from DB
-        $categories = \App\Category::all();
+        $articles = \App\Article::all();
         // pass them to the view
-        return view('categories/index', ['categories' => $categories]);
+        return view('articles/index', ['articles' => $articles]);
 
-        // render them in the view
     }
 
     /**
@@ -28,7 +28,9 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('categories/create');
+        $categories = \App\Category::all();
+        // return Auth::user()->id;
+        return view('articles/create', ['categories' => $categories]);
     }
 
     /**
@@ -39,12 +41,14 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $newRow = new \App\Category();
-        $newRow->name = $request->get('name');
-        $newRow->code = $request->get('code');
+        $newRow = new \App\Article();
+        $newRow->title = $request->get('title');
+        $newRow->text = $request->get('text');
+        $newRow->category_id = $request->get('category');
+        $newRow->user_id = Auth::user()->id;
         $newRow->save();
 
-        return redirect(action('CategoryController@index'));
+        return redirect(action('ArticleController@create'));
     }
 
     /**
@@ -53,15 +57,14 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($code)
+    public function show($name)
     {
-        $shownCategory = \App\Category::where('code','=',$code)->first();
-        $articles = $shownCategory->articles()->get();
-        return $articles;
+
+        $shownCategory = \App\Article::where('name','=',$name)->first();
 
         return $shownCategory;
 
-        return $code;
+        return $name;
     }
 
     /**
